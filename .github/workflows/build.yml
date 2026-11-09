@@ -15,16 +15,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
+      - name: Download Android Gradle Plugin & Build
         uses: android-actions/setup-android@v3
 
-      - name: Build with Gradle
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: google_apis
-          arch: x86_64
-          disable-animations: true
-          script: ./gradlew assembleDebug
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      # Alternativa pro čistý build bez emulátoru (pokud by to padalo na emulátoru):
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: boulder-downloader-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
